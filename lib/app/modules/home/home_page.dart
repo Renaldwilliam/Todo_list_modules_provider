@@ -1,27 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:todo_list_provider/app/core/auth/auth_provider.dart';
+import 'package:todo_list_provider/app/core/notifier/default_listener_notifier.dart';
 import 'package:todo_list_provider/app/core/ui/theme_extensions.dart';
 import 'package:todo_list_provider/app/core/ui/todo_list_icons.dart';
+import 'package:todo_list_provider/app/models/task_filter_enum.dart';
+import 'package:todo_list_provider/app/modules/home/home_controller.dart';
 import 'package:todo_list_provider/app/modules/home/wisgets/home_drawer.dart';
 import 'package:todo_list_provider/app/modules/home/wisgets/home_filters.dart';
 import 'package:todo_list_provider/app/modules/home/wisgets/home_header.dart';
 import 'package:todo_list_provider/app/modules/home/wisgets/home_tasks.dart';
 import 'package:todo_list_provider/app/modules/home/wisgets/home_week.dart';
 import 'package:todo_list_provider/app/modules/taks/taks_modulo.dart';
-import 'package:todo_list_provider/app/modules/taks/task_create_task_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final HomeController _homeController;
+  const HomePage({Key? key, required HomeController homeController})
+      : _homeController = homeController,
+        super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  void _goToCreateTask(BuildContext context) {
+  @override
+  void initState() {
+    super.initState();
+    DefaultListenerNotifier(changenotifier: widget._homeController).listener(
+      context: context,
+      successCallBack: (notifier, listenerNotifier) {},
+    );
+
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      widget._homeController.loadTotalTasks();
+      widget._homeController.findTasks(filter: TaskFilterEnum.today);
+    });
+  }
+
+  Future<void> _goToCreateTask(BuildContext context) async {
     // Navigator.of(context).pushNamed('/task/create');
-    Navigator.of(context).push(
+    await Navigator.of(context).push(
       PageRouteBuilder(
         transitionDuration: const Duration(microseconds: 400),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -38,6 +55,8 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
+
+    widget._homeController.refreshPage();
   }
 
   @override
@@ -49,12 +68,16 @@ class _HomePageState extends State<HomePage> {
           elevation: 0,
           actions: [
             PopupMenuButton(
+              onSelected: (value) {
+                widget._homeController.showOrHideFinishisTaska();
+              },
               icon: const Icon(
                 TodoListIcons.filter,
               ),
               itemBuilder: (_) => [
-                const PopupMenuItem<bool>(
-                  child: Text('Mostrar Tarefas concluidas'),
+                PopupMenuItem<bool>(
+                  value: true,
+                  child: Text('${widget._homeController.showFinishingTasks ? 'Mostrar' : 'Escondet'} tarefas concluidas'),
                 ),
               ],
             ),

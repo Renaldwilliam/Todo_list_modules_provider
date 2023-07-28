@@ -29,8 +29,7 @@ class _TaskCreateTaskPageState extends State<TaskCreateTaskPage> {
     ).listener(
       context: context,
       successCallBack: (notifier, listenerNotifier) {
-        // listenerNotifier.dpos
-        Navigator.pop(context);
+        Navigator.of(context).pop();
       },
     );
   }

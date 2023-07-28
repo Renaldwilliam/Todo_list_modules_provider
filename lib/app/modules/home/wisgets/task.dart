@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_list_provider/app/modules/home/home_controller.dart';
 
-class Task extends StatefulWidget {
-  const Task({super.key});
+import '../../../models/task_model.dart';
 
-  @override
-  State<Task> createState() => _TaskState();
-}
+class Task extends StatelessWidget {
+  final TaskModel model;
+  final dateFormat = DateFormat('dd/MM/y');
 
-class _TaskState extends State<Task> {
+  Task({Key? key, required this.model}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,18 +26,18 @@ class _TaskState extends State<Task> {
         child: ListTile(
           contentPadding: EdgeInsets.all(8),
           leading: Checkbox(
-            value: true,
-            onChanged: (value) {},
+            value: model.finished,
+            onChanged: (value) => context.read<HomeController>().checkOrUncheckTask(model),
           ),
           title: Text(
-            'Descrição da Task',
+            model.description,
             style: TextStyle(
-                decoration: false ? TextDecoration.lineThrough : null),
+                decoration: model.finished ? TextDecoration.lineThrough : null),
           ),
           subtitle: Text(
-            '20/07/2023',
+            dateFormat.format(model.dateTime),
             style: TextStyle(
-                decoration: false ? TextDecoration.lineThrough : null),
+                decoration: model.finished ? TextDecoration.lineThrough : null),
           ),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),

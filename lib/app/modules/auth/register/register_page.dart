@@ -29,7 +29,8 @@ class _RegisterPageState extends State<RegisterPage> {
     defaultLiostener.listener(
       context: context,
       successCallBack: (notifier, listenerNotifier) {
-        Navigator.of(context).pop();
+        // Remvoes essa pop dvido a alteração do authStateChanges
+        // Navigator.of(context).pop();
       },
       errorVoidCallBack: (notifier, listenerNotifier) {
         print('Deu algum erro');

@@ -6,10 +6,10 @@ class MigrationV2 implements Migration {
   void create(Batch batch) {
     batch.execute('''
       create table teste2(
-        id Interger primary key autoincrement,
+        id INTEGER primary key autoincrement,
         descricao varchar(500) not null,
         data_hora datetime,
-        finalizado integer,
+        finalizado INTEGER
       )
     ''');
   }
@@ -18,10 +18,10 @@ class MigrationV2 implements Migration {
   void update(Batch batch) {
     batch.execute('''
       create table teste2(
-        id Interger primary key autoincrement,
+        id INTEGER primary key autoincrement,
         descricao varchar(500) not null,
         data_hora datetime,
-        finalizado integer,
+        finalizado INTEGER
       )
     ''');
   }
